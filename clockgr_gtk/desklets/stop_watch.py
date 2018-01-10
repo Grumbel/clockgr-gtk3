@@ -1,4 +1,5 @@
-import gobject
+from gi.repository import GObject
+
 from datetime import datetime, timedelta
 
 from clockgr_gtk.desklet import Desklet
@@ -62,10 +63,10 @@ class StopWatch(Desklet):
 
         if self.timer.is_running():
             if not self.timeout_handle:
-                self.timeout_handle = gobject.timeout_add(31, self.on_timeout)
+                self.timeout_handle = GObject.timeout_add(31, self.on_timeout)
         else:
             if self.timeout_handle:
-                gobject.source_remove(self.timeout_handle)
+                GObject.source_remove(self.timeout_handle)
                 self.timeout_handle = None
 
         self.queue_draw()
