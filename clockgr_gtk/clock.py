@@ -19,10 +19,10 @@
 
 from __future__ import print_function
 
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gobject
+import gi
+gi.require_version('Gtk', '2.0')
+from gi.repository import Gtk, GObject
+
 import sys
 
 from datetime import datetime
@@ -44,10 +44,10 @@ def is_olpc():
         return False
 
 
-class ClockWidget(gtk.DrawingArea):
+class ClockWidget(Gtk.DrawingArea):
 
     def __init__(self, renderer):
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
         self.renderer = renderer
         self.renderer.set_parent(self)
         self.connect("expose-event", self.do_expose_event)
@@ -122,7 +122,7 @@ class ClockRenderer(object):
         if self.parent:
             self.parent.queue_draw()
         else:
-            root = gtk.gdk.get_default_root_window()
+            root = Gtk.gdk.get_default_root_window()
             rect = root.get_frame_extents()
             root.invalidate_rect(rect, False)
             cr = root.cairo_create()
@@ -152,9 +152,9 @@ class ClockRenderer(object):
 
 def realize_cb(widget):
     print("realize_cb")
-    pixmap = gtk.gdk.Pixmap(None, 1, 1, 1)
-    color = gtk.gdk.Color()
-    cursor = gtk.gdk.Cursor(pixmap, pixmap, color, color, 0, 0)
+    pixmap = Gtk.gdk.Pixmap(None, 1, 1, 1)
+    color = Gtk.gdk.Color()
+    cursor = Gtk.gdk.Cursor(pixmap, pixmap, color, color, 0, 0)
     widget.window.set_cursor(cursor)
 
 
@@ -170,11 +170,11 @@ def main(argv):
     if use_root_window:
         renderer = ClockRenderer()
         renderer.invert()
-        gobject.timeout_add(1000, renderer.update)
+        GObject.timeout_add(1000, renderer.update)
     else:
         renderer = ClockRenderer()
         widget = ClockWidget(renderer)
-        window = gtk.Window()
+        window = Gtk.Window()
         window.set_title("ClockGr")
         widget.show()
         window.add(widget)
@@ -184,60 +184,61 @@ def main(argv):
         if is_olpc():
             window.fullscreen()
 
-        accelgroup = gtk.AccelGroup()
-        key, modifier = gtk.accelerator_parse('Escape')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 gtk.main_quit)
-        key, modifier = gtk.accelerator_parse('f')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 lambda *args: window.fullscreen())
-        key, modifier = gtk.accelerator_parse('space')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 lambda *args: renderer.stopwatch.start_stop_watch())
-        key, modifier = gtk.accelerator_parse('Return')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 lambda *args: renderer.stopwatch.clear_stop_watch())
+        accelgroup = Gtk.AccelGroup()
 
-        key, modifier = gtk.accelerator_parse('1')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 lambda *args: renderer.calendar.previous_month())
-        key, modifier = gtk.accelerator_parse('2')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 lambda *args: renderer.calendar.next_month())
+        # key, modifier = Gtk.accelerator_parse('Escape')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          Gtk.main_quit)
+        # key, modifier = Gtk.accelerator_parse('f')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          lambda *args: window.fullscreen())
+        # key, modifier = Gtk.accelerator_parse('space')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          lambda *args: renderer.stopwatch.start_stop_watch())
+        # key, modifier = Gtk.accelerator_parse('Return')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          lambda *args: renderer.stopwatch.clear_stop_watch())
 
-        key, modifier = gtk.accelerator_parse('i')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 lambda *args: renderer.invert())
+        # key, modifier = Gtk.accelerator_parse('1')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          lambda *args: renderer.calendar.previous_month())
+        # key, modifier = Gtk.accelerator_parse('2')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          lambda *args: renderer.calendar.next_month())
 
-        key, modifier = gtk.accelerator_parse('m')
-        accelgroup.connect_group(key,
-                                 modifier,
-                                 gtk.ACCEL_VISIBLE,
-                                 lambda *args: renderer.next_mode())
+        # key, modifier = Gtk.accelerator_parse('i')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          lambda *args: renderer.invert())
 
-        window.add_accel_group(accelgroup)
+        # key, modifier = Gtk.accelerator_parse('m')
+        # accelgroup.connect_group(key,
+        #                          modifier,
+        #                          Gtk.ACCEL_VISIBLE,
+        #                          lambda *args: renderer.next_mode())
+
+        # window.add_accel_group(accelgroup)
 
         window.set_size_request(1200, 900)
-        window.connect("delete-event", gtk.main_quit)
+        window.connect("delete-event", Gtk.main_quit)
         window.connect("realize", realize_cb)
 
-        gobject.timeout_add(1000, renderer.update)
+        GObject.timeout_add(1000, renderer.update)
 
-    gtk.main()
+    Gtk.main()
 
 
 def main_entrypoint():
