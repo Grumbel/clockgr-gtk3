@@ -17,6 +17,7 @@
             src = nixpkgs.lib.cleanSource ./.;
             nativeBuildInputs = [
               pkgs.gobject-introspection
+              pkgs.wrapGAppsHook
               pkgs.gtk3
             ];
             propagatedBuildInputs = [
