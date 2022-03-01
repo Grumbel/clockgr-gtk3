@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -25,7 +25,7 @@ setup(
     author="Ingo Ruhnke",
     author_email="grumbel@gmail.com",
     url="https://github.com/Grumbel/clockgr-gtk3",
-    packages=["clockgr_gtk"],
+    packages=find_packages(),
     entry_points={
         'console_scripts': [],
         'gui_scripts': [
