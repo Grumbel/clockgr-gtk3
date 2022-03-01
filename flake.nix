@@ -24,6 +24,9 @@
               pkgs.python3Packages.pycairo
               pkgs.python3Packages.pygobject3
             ];
+            meta = {
+              mainProgram = "clockgr-gtk";
+            };
           };
         };
         defaultPackage = packages.clockgr-gtk3;
