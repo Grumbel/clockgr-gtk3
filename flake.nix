@@ -10,10 +10,12 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-      in rec {
-        packages = flake-utils.lib.flattenTree rec {
-          clockgr-gtk3 = pkgs.python3Packages.buildPythonPackage {
-            name = "clockgr-gtk3";
+      in {
+        packages = rec {
+          default = clockgr-gtk;
+
+          clockgr-gtk = pkgs.python3Packages.buildPythonPackage {
+            name = "clockgr-gtk";
             src = nixpkgs.lib.cleanSource ./.;
             nativeBuildInputs = [
               pkgs.gobject-introspection
@@ -24,11 +26,8 @@
               pkgs.python3Packages.pycairo
               pkgs.python3Packages.pygobject3
             ];
-            meta = {
-              mainProgram = "clockgr-gtk";
-            };
           };
         };
-        defaultPackage = packages.clockgr-gtk3;
-      });
+      }
+    );
 }
