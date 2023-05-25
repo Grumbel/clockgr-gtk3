@@ -28,6 +28,15 @@
             ];
           };
         };
+
+        apps = rec {
+          default = clockgr-gtk3;
+
+          clockgr-gtk3 = flake-utils.lib.mkApp {
+            drv = packages.clockgr-gtk;
+            exePath = "/bin/clockgr-gtk";
+          };
+        };
       }
     );
 }
