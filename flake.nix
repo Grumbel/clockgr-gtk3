@@ -2,7 +2,7 @@
   description = "Simple fullscreen clock app";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -10,21 +10,24 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-      in {
+      in rec {
         packages = rec {
           default = clockgr-gtk;
 
           clockgr-gtk = pkgs.python3Packages.buildPythonPackage {
             name = "clockgr-gtk";
+
             src = nixpkgs.lib.cleanSource ./.;
-            nativeBuildInputs = [
-              pkgs.gobject-introspection
-              pkgs.wrapGAppsHook
-              pkgs.gtk3
+
+            nativeBuildInputs = with pkgs; [
+              gobject-introspection
+              wrapGAppsHook
+              gtk3
             ];
-            propagatedBuildInputs = [
-              pkgs.python3Packages.pycairo
-              pkgs.python3Packages.pygobject3
+
+            propagatedBuildInputs = with pkgs.python3Packages; [
+              pycairo
+              pygobject3
             ];
           };
         };
